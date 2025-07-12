@@ -33,3 +33,4 @@ USER appuser
 EXPOSE 4040
 
 ENTRYPOINT ["/app/server"]
+CMD ["--port", "4040"]
