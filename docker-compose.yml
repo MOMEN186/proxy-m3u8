@@ -9,11 +9,18 @@ services:
         TARGETOS: linux
         TARGETARCH: amd64
     environment:
-      PORT: 4040
+      PORT: 8080
       REDIS_URL: "redis://redis:6379"
       CORS_DOMAIN: "https://4rabanime.fun,https://4rbanime.com"
     expose:
-      - "4040"
+      - "8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proxy.rule=Host(`proxy.4rabanime.fun`)"
+      - "traefik.http.routers.proxy.entrypoints=websecure"
+      - "traefik.http.routers.proxy.tls=true"
+      - "traefik.http.routers.proxy.tls.certresolver=letsencrypt"
+      - "traefik.http.services.proxy.loadbalancer.server.port=8080"
     networks:
       - dokploy-network
 
