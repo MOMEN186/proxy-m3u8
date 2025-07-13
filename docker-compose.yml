@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   proxy:
     build:
@@ -11,24 +9,15 @@ services:
     environment:
       PORT: 8080
       REDIS_URL: "redis://redis:6379"
-      CORS_DOMAIN: "https://4rabanime.fun,https://4rbanime.com"
+      CORS_DOMAIN: "https://4rabanime.fun,https://4rabanime.com"
     expose:
       - "8080"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.proxy.rule=Host(`proxy.4rabanime.fun`)"
+      - "traefik.http.routers.proxy.rule=Host(`proxy.4rabanime.fun`, `proxy.4rabanime.com`)"
       - "traefik.http.routers.proxy.entrypoints=websecure"
       - "traefik.http.routers.proxy.tls=true"
       - "traefik.http.routers.proxy.tls.certresolver=letsencrypt"
       - "traefik.http.services.proxy.loadbalancer.server.port=8080"
     networks:
       - dokploy-network
-
-  redis:
-    image: redis:7-alpine
-    networks:
-      - dokploy-network
-
-networks:
-  dokploy-network:
-    external: true
