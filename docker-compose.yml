@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TARGETOS: linux
+        TARGETARCH: amd64
+    environment:
+      PORT: 4040
+      REDIS_URL: "redis://redis:6379"
+      CORS_DOMAIN: "https://4rabanime.fun,https://4rbanime.com"
+    expose:
+      - "4040"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proxy.rule=Host(`proxy.4rabanime.fun`)"
+      - "traefik.http.routers.proxy.entrypoints=websecure"
+      - "traefik.http.routers.proxy.tls=true"
+      - "traefik.http.routers.proxy.tls.certresolver=letsencrypt"
+      - "traefik.http.services.proxy.loadbalancer.server.port=4040"
+    networks:
+      - dokploy-network
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
